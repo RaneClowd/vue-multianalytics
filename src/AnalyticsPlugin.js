@@ -12,14 +12,14 @@ export default class AnalyticsPlugin {
                   * params object should contain
                   * @param viewName
                   */
-                 trackView(params = {}, excludedModules = []) {
+                 trackView(params = {}, extraData = {}, excludedModules = []) {
                    if (!params.viewName) {
                      return;
                    }
 
                    this.modulesEnabled.forEach(module => {
                      if (excludedModules.indexOf(module.name) === -1) {
-                       module.trackView(params);
+                       module.trackView(params, extraData);
                      }
                    });
                  }

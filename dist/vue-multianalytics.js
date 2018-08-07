@@ -184,7 +184,7 @@ module.exports =
 	      return;
 	    }
 	    // Dispatch vue event using meta analytics value if defined otherwise fallback to route name
-	    Vue.ma.trackView({ viewName: to.meta.analytics || to[routing.preferredProperty] }, routing.ignoredModules);
+	    Vue.ma.trackView({ viewName: to.meta.analytics || to[routing.preferredProperty] }, routing.extraData, routing.ignoredModules);
 	  });
 
 	  return routing.ignoredViews;
@@ -231,7 +231,8 @@ module.exports =
 	    key: "trackView",
 	    value: function trackView() {
 	      var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-	      var excludedModules = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+	      var extraData = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+	      var excludedModules = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
 	      if (!params.viewName) {
 	        return;
@@ -239,7 +240,7 @@ module.exports =
 
 	      this.modulesEnabled.forEach(function (module) {
 	        if (excludedModules.indexOf(module.name) === -1) {
-	          module.trackView(params);
+	          module.trackView(params, extraData);
 	        }
 	      });
 	    }
@@ -1147,6 +1148,8 @@ module.exports =
 	  value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _analyticsTypes = __webpack_require__(3);
@@ -1235,12 +1238,13 @@ module.exports =
 	    key: 'trackView',
 	    value: function trackView(_ref) {
 	      var viewName = _ref.viewName;
+	      var extraData = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
 	      if (!mixpanel.track) return;
 	      if (this.config.debug) {
 	        (0, _utils.logDebug)(viewName);
 	      }
-	      mixpanel.track("Page Viewed", { "page": viewName });
+	      mixpanel.track("Page Viewed", _extends({ "page": viewName }, extraData));
 	    }
 
 	    /**
